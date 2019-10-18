@@ -31,7 +31,8 @@ export class TilingState {
 
     resetOffset() {
         // const gamma = 0.1;  // Penrose star
-        const gamma = (this.dims === 5) ? 0.3 : 0;  // Penrose sun
+        // const gamma = 0.3;  // Penrose sun
+        const gamma = (this.dims === 5) ? 0.3 : 0;
         this.offset = new Array(this.dims);
         this.offset.fill(gamma);
     }

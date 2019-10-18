@@ -49,6 +49,7 @@ class TilingApp {
 
         this.animating = false;
         this.animTime = -1;
+        this.clock = 1;
         const animateBtn = document.getElementById('animate');
         animateBtn.addEventListener('click', () => {
             if (!this.animating) {
@@ -222,10 +223,41 @@ class TilingApp {
         if (!this.animating) return;
         const dt = (this.animTime >= 0) ? timestamp - this.animTime : 0;
         this.animTime = timestamp;
-        const theta = 2*Math.PI / 3e4 * dt;
-        rotate(this.state.basis[0], 0, 1, theta);
-        rotate(this.state.basis[1], 0, 1, theta);
-        this.updateAxisControls();
+			this.clock++;
+			//old animation of axes
+        //const theta = 2*Math.PI / 3e4 * dt;
+        //rotate(this.state.basis[0], 0, 1, theta);
+        //rotate(this.state.basis[1], 0, 1, theta);
+        //this.updateAxisControls();
+			let max = this.state.dims;
+			/* animate each offset randomly.
+			let off = Math.floor(Math.random() * max);
+			let subtr = Math.floor(Math.random() * 2);
+				let rand = Math.random() * dt / 1000;
+			if (subtr && this.state.offset[off] - rand >= 0) 
+				this.state.offset[off] = (this.state.offset[off] - rand) % 1;
+			else if (subtr) 
+				this.state.offset[off] = 1 - ((this.state.offset[off] - rand) % 1);
+			else
+				this.state.offset[off] = (this.state.offset[off] + rand) % 1;
+			*/
+
+			if (this.clock % 10 == 1) {
+			const targetSum = 1;
+				let addend = Math.random() * dt / (max * 100);
+				let sum = 0;
+				for (let off = 0; off < max; off++) {
+					//Animate the total change.
+					if (off == max - 1) {
+						addend = targetSum - sum;
+					} else if (off > 0) {
+						addend = Math.random() * (targetSum - sum) / max;
+					}
+					sum += addend;
+					this.state.offset[off] = (this.state.offset[off] + addend) % 1;
+				}
+			}
+        this.updateOffsetControls();
         this.draw();
         window.requestAnimationFrame((t) => this.animate(t));
     }

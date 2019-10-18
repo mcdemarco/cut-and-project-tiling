@@ -20,13 +20,15 @@ Prerequisites:
 
 1. Install [Rust and cargo](https://www.rust-lang.org/tools/install)
 
-2. Install [node and npm](http://nodejs.org)
+2. Install [node and npm](http://nodejs.org)  
 
 3. Install [wasm-pack](https://rustwasm.github.io/wasm-pack/installer/)
 
 4. Install project dependencies:
 
-        npm install
+    npm install
+
+(I had trouble with fsevents on Sierra and had to downgrade node to 8.11.2 to install.)
 
 To run dev server:
 
@@ -44,3 +46,7 @@ To build for deployment (into `dist` subdirectory):
 ## Acknowledgments
 
 I drew inspiration from [Quasitiler](http://www.geom.uiuc.edu/apps/quasitiler/about.html). My favorite feature borrowed from it is the axis control rosette. Before that, I was trying to control the orientation of the cutting plane with angles, and Quasitiler's way is far superior.
+
+## Fork
+
+The purpose of the fork is to show/animate Penrose tilings.
