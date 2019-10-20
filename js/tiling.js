@@ -30,9 +30,13 @@ export class TilingState {
     }
 
     resetOffset() {
+        // const gamma = 0;  // the anti-Penrose tiling
         // const gamma = 0.1;  // Penrose star
         // const gamma = 0.3;  // Penrose sun
-        const gamma = (this.dims === 5) ? 0.3 : 0;
+        // const gamma = 0.5;  // a cartwheely thing
+        // const gamma = 0.7;  // mirror reflection of the sun
+        // const gamma = 0.9;  // mirror reflection of the star
+        const gamma = (this.dims === 5) ? 0.3 : 0; 
         this.offset = new Array(this.dims);
         this.offset.fill(gamma);
     }

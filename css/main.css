@@ -43,7 +43,7 @@
     display: flex;
 }
 #numAxesLabel {
-    padding: 0 5px 0 2px;
+    padding: 2px 5px 0 2px;
 }
 #reset {
     flex-grow: 1;
@@ -65,14 +65,16 @@
 .active:after {
     content: '\FF0D'; /* Unicode fullwidth hyphen-minus */
 }
-#about i {
+#about i,
+.about label {
     font-size: smaller;
 }
 #about ul {
     margin: 0px;
     padding-inline-start: 20px;
 }
-#about input {
+#about input, 
+.about input[type=button] {
     width: 100%;
 }
 #codeShow {

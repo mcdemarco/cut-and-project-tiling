@@ -90,7 +90,7 @@ export class TilingView {
         window.addEventListener('resize', this, false);
     }
 
-    draw(state, tilingGen) {
+    draw(state, tilingGen, outline) {
         const faces = tilingGen(state, this.viewWidth, this.viewHeight);
 
         const ctx = this.canvas.getContext('2d');
@@ -104,7 +104,7 @@ export class TilingView {
         ctx.lineJoin = 'bevel';
         ctx.strokeStyle = state.lineColor;
         faces.forEach((f) => {
-            ctx.fillStyle = state.colors[f.type];
+            ctx.fillStyle = outline ? 'white' : state.colors[f.type];
             ctx.beginPath();
             ctx.moveTo(f.verts[0][0], f.verts[0][1]);
             ctx.lineTo(f.verts[1][0], f.verts[1][1]);

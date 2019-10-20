@@ -8,7 +8,10 @@ class TilingApp {
     constructor() {
         const numAxes = document.getElementById('numAxes');
         numAxes.addEventListener('change', () => {
+					console.log("reaxing");
             this.setState(new TilingViewState(parseInt(numAxes.value, 10)));
+					 document.getElementById('legal').checked = (parseInt(numAxes.value, 10) == 5);
+					 document.getElementById('legal').disabled = (parseInt(numAxes.value, 10) != 5);
         });
         const dims = parseInt(numAxes.value, 10);
         this.state = new TilingViewState(dims);
@@ -40,6 +43,18 @@ class TilingApp {
             this.redraw();
         });
 
+			//Turning on symmetry or legality needs a redraw.
+			document.getElementById('symmetric').addEventListener('click', () => {
+				if (document.getElementById('symmetric').checked) {
+					this.setState(new TilingViewState(parseInt(numAxes.value, 10)));
+				}
+      });
+			document.getElementById('legal').addEventListener('click', () => {
+				if (document.getElementById('legal').checked) {
+					this.setState(new TilingViewState(parseInt(numAxes.value, 10)));
+				}
+      });
+
         this.initColorControls(dims);
         attachToggle('colorToggle', 'colorControls');
         document.getElementById('colorControls').style.display = 'none';
@@ -60,7 +75,12 @@ class TilingApp {
                 animateBtn.value = 'Animate';
             }
         });
-
+			document.getElementById('step').addEventListener('click', () => {
+				this.stepAnimation();
+				//Stops animation so update button.
+				animateBtn.value = 'Animate';
+			});
+ 
         const saveBtn = document.getElementById('save');
         saveBtn.addEventListener('click', () => {
             this.state.genStateCode((code) => {
@@ -148,8 +168,8 @@ class TilingApp {
         colorsDiv.parentNode.replaceChild(divClone, colorsDiv);
     }
 
-    draw() {
-        this.tilingView.draw(this.state, this.tilingGen);
+    draw(outline) {
+        this.tilingView.draw(this.state, this.tilingGen, outline);
         this.axisControls.draw();
     }
 
@@ -215,6 +235,12 @@ class TilingApp {
         window.requestAnimationFrame((t) => this.animate(t));
     }
 
+    stepAnimation() {
+        this.animating = true;
+        this.animate(0);
+        this.animating = false;
+    }
+
     stopAnimation() {
         this.animating = false;
     }
@@ -224,41 +250,28 @@ class TilingApp {
         const dt = (this.animTime >= 0) ? timestamp - this.animTime : 0;
         this.animTime = timestamp;
 			this.clock++;
-			//old animation of axes
-        //const theta = 2*Math.PI / 3e4 * dt;
-        //rotate(this.state.basis[0], 0, 1, theta);
-        //rotate(this.state.basis[1], 0, 1, theta);
-        //this.updateAxisControls();
 			let max = this.state.dims;
-			/* animate each offset randomly.
-			let off = Math.floor(Math.random() * max);
-			let subtr = Math.floor(Math.random() * 2);
-				let rand = Math.random() * dt / 1000;
-			if (subtr && this.state.offset[off] - rand >= 0) 
-				this.state.offset[off] = (this.state.offset[off] - rand) % 1;
-			else if (subtr) 
-				this.state.offset[off] = 1 - ((this.state.offset[off] - rand) % 1);
-			else
-				this.state.offset[off] = (this.state.offset[off] + rand) % 1;
-			*/
+			let symmetric = document.getElementById('symmetric').checked;
+			let legal = document.getElementById('legal').checked;
 
-			if (this.clock % 10 == 1) {
-			const targetSum = 1;
-				let addend = Math.random() * dt / (max * 100);
+//			if (this.clock % 100 == 1) { //for slowing down
+			var targetSum = (legal ? 1 : 0.01 * max); //0.707 * max; //0.01 * max;
+				let addend = targetSum / max; //Math.random() * dt / (max * 100);
 				let sum = 0;
 				for (let off = 0; off < max; off++) {
 					//Animate the total change.
 					if (off == max - 1) {
-						addend = targetSum - sum;
-					} else if (off > 0) {
-						addend = Math.random() * (targetSum - sum) / max;
+							addend = targetSum - sum;
+					} else if (off > 0 && !symmetric) {
+							addend = Math.random() * (targetSum - sum) / (max - off);
 					}
 					sum += addend;
 					this.state.offset[off] = (this.state.offset[off] + addend) % 1;
 				}
-			}
+//			}
+
         this.updateOffsetControls();
-        this.draw();
+        this.draw(); //max == 5 && this.clock % (max * 4) != 1);
         window.requestAnimationFrame((t) => this.animate(t));
     }
 }
